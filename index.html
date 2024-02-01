@@ -1,0 +1,56 @@
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>Landsat 8 NDVI Visualization | ArcGIS API for JavaScript</title>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.28/esri/themes/light/main.css" />
+  <style>
+    html, body, #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+  <script src="https://js.arcgis.com/4.28/"></script>
+</head>
+<body>
+  <div id="viewDiv"></div>
+  <script>
+    require([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/layers/ImageryLayer",
+      "esri/layers/support/RasterFunction"
+    ], function(Map, MapView, ImageryLayer, RasterFunction) {
+
+      // Define the NDVI raster function
+      const ndviRasterFunction = new RasterFunction({
+        functionName: "NDVI Colorized",
+        variableName: "Raster"
+      });
+
+      // Create an ImageryLayer using the Landsat 8 service
+      const landsatLayer = new ImageryLayer({
+        url: "https://landsat2.arcgis.com/arcgis/rest/services/Landsat8_Views/ImageServer",
+        rasterFunction: ndviRasterFunction
+      });
+
+      // Create the map and add the imagery layer
+      const map = new Map({
+        basemap: "hybrid",
+        layers: [landsatLayer]
+      });
+
+      // Create the MapView and set its properties
+      const view = new MapView({
+        container: "viewDiv",
+        map: map,
+        center: [-93.5, 42.0], // Center over the Midwest
+        zoom: 6 // Adjust zoom level as needed
+      });
+    });
+  </script>
+</body>
+</html>
